@@ -8,13 +8,13 @@ import json
 
 # User specifies .csv file with board data and Google spreadsheet question tracker name
 
-csv_data_file = "Mock-up_Authoring_Board_2.csv"
+csv_data_file = "C:/Users/James/OneDrive/Documents/008_VisualStudio/IDEMS/Quesiton Bank manager/Mock-up_Authoring_Board_2.csv"
 gss_name = "Mock-up Question Bank 2"
 
 # <---------- SET UP ------------->
 
 # Open the question bank
-client = pygsheets.authorize(service_account_file="service_account.json")
+client = pygsheets.authorize(service_account_file="C:/Users/James/OneDrive/Documents/008_VisualStudio/IDEMS/Quesiton Bank manager/service_account.json")
 gss_question_bank = client.open(gss_name)
 gws_question_bank = gss_question_bank.worksheet("title", "Question Tracker")
 

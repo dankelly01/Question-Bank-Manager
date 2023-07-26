@@ -13,7 +13,7 @@ database_name = "Mock-up Database"
 # <---------- SET UP ------------->
 
 # Open question bank
-client = pygsheets.authorize(service_account_file="service_account.json")
+client = pygsheets.authorize(service_account_file="C:/Users/James/OneDrive/Documents/008_VisualStudio/IDEMS/Quesiton Bank manager/service_account.json")
 gss_question_bank = client.open(question_bank_name)
 gws_question_bank = gss_question_bank.worksheet("title", "Question Tracker")
 
