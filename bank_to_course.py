@@ -1,7 +1,7 @@
+# WOKRING ON
+
 # Importing required libraries
 import pygsheets
-import csv
-import json
 
 # User must specify
 # 1. Name of the Open Question Bank, 
@@ -122,7 +122,6 @@ for question_row in course_questions:
 '''
 NEEDS WORK
 '''
-print(ordered_course_questions[0])
 
 
 # --------------- UPLOAD NEW DATA TO COURSE TRACKER
@@ -132,93 +131,3 @@ no_questions = len(ordered_course_questions)
 gws_course_tracker.update_values(
     "A2:J" + str(no_questions + 1), 
     ordered_course_questions)
-
-
-
-'''
-question_bank_question_codes = gws_question_bank.get_col(
-    1,
-    include_tailing_empty=False,
-    )[1:]
-question_bank_data = gws_question_bank.get_values(
-    start = "A2", 
-    end = "R" + str(len(question_bank_question_codes) + 1),
-    value_render = "FORMULA"
-    )
-
-# Open database
-gss_database = client.open(database_name)
-gws_database = gss_database.worksheet("title", "Question Database")
-
-# Download database headers, question codes and data
-database_heads = gws_database.get_row(
-    1,
-    include_tailing_empty=False,
-    )
-database_question_codes = gws_database.get_col(
-    1,
-    include_tailing_empty=False,
-    )[1:]
-if len(database_question_codes) >= 1:
-    database_data = gws_database.get_values(
-        start = "A2", 
-        end = "L" + str(len(database_question_codes) + 1),
-        value_render = "FORMULA"
-        )
-else:
-    database_data = []
-
-# Set up key-value mapping from the header of the column to position in the row
-question_bank_headsToIndex = {}
-for i in question_bank_heads:
-    question_bank_headsToIndex[i] = question_bank_heads.index(i)
-database_headsToIndex = {}
-for i in database_heads:
-    database_headsToIndex[i] = database_heads.index(i)
-
-# Loop through the data in the question bank being uploaded
-for question in question_bank_data:
-
-    # Proceed if the question is not marked as backed up
-    if question[question_bank_headsToIndex["Backed up"]] == False:
-
-        # If the question already has a entry in the database, update the data
-        if question[question_bank_headsToIndex["Question Code"]] in database_question_codes:
-            row_to_edit = database_question_codes.index(question[question_bank_headsToIndex["Question Code"]])
-            
-            for header in database_heads:
-                if header == "IDEMS Question Bank":
-                    database_data[row_to_edit][database_headsToIndex[header]] = question_bank_name
-                elif header == "Status":
-                    if question[question_bank_headsToIndex[header]] == "Approved":
-                        database_data[row_to_edit][database_headsToIndex[header]] = "Completed"
-                    else:
-                        database_data[row_to_edit][database_headsToIndex[header]] = "Under Review"
-                else:
-                    database_data[row_to_edit][database_headsToIndex[header]] = question[question_bank_headsToIndex[header]]
-        
-        # If the question does not have an entry, add one with the relevant data
-        else:
-            row_to_edit = len(database_question_codes)
-            database_question_codes.append(question[question_bank_headsToIndex["Question Code"]])
-            database_data.append(["" for x in database_heads])
-
-            for header in database_heads:
-                if header == "IDEMS Question Bank":
-                    database_data[row_to_edit][database_headsToIndex[header]] = "Mock-up Question Tracker 1"
-                elif header == "Status":
-                    if question[question_bank_headsToIndex[header]] == "Approved":
-                        database_data[row_to_edit][database_headsToIndex[header]] = "Completed"
-                    else:
-                        database_data[row_to_edit][database_headsToIndex[header]] = "Under Review"
-                else:
-                    database_data[row_to_edit][database_headsToIndex[header]] = question[question_bank_headsToIndex[header]]
-
-# Push the updated data to the database
-database_no_rows = len(database_data)
-gws_database.update_values("A2:L" + str(database_no_rows + 1), database_data)
-
-# Mark the questions in the question bank as updated
-question_bank_no_rows = len(question_bank_data)
-gws_question_bank.update_values("R2:R" + str(database_no_rows + 1), [[True] for x in question_bank_data])
-'''
