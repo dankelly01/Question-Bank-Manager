@@ -1,3 +1,5 @@
+# REQUIRES UPDATES
+
 # Importing required libraries
 import pygsheets
 import csv
