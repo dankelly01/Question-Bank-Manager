@@ -1,3 +1,5 @@
+# LEGACY
+
 # Importing required libraries
 import pygsheets
 import csv
