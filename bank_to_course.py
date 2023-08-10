@@ -1,4 +1,7 @@
 # WOKRING ON
+# Code exports questions selected in question bank to course tracker
+# Currently reformats the tracker each time (could by updated)
+# Add transporting of lists sheet
 
 # Importing required libraries
 import pygsheets
@@ -126,8 +129,16 @@ NEEDS WORK
 
 # --------------- UPLOAD NEW DATA TO COURSE TRACKER
 
-# Push the updated data to the database
+# Push the updated question data to the course tracker
 no_questions = len(ordered_course_questions)
 gws_course_tracker.update_values(
-    "A2:J" + str(no_questions + 1), 
+    "A2:K" + str(no_questions + 1), 
     ordered_course_questions)
+
+# Delete any extra rows in the course tracker
+course_tracker_rows = gws_course_tracker.rows
+if course_tracker_rows > no_questions + 1:
+    gws_course_tracker.delete_rows(
+        no_questions + 2, 
+        gws_course_tracker.rows - (no_questions + 1)
+    )
