@@ -254,10 +254,11 @@ class board:
 
 class card:
 
-    def __init__(self, questionTitle, questionCode, description, status, leadAuthor, peerReviewer, secondReviewer, authorCodes, conceptLink, stackLink, cardLink):
+    def __init__(self, questionTitle, icon, questionCode, description, status, leadAuthor, peerReviewer, secondReviewer, authorCodes, conceptLink, stackLink, cardLink):
         self.questionTitle = questionTitle
         self.date = math.floor(1000*time.time())
         self.id = get_random_string(27)
+        self.icon = icon
         self.questionCode = questionCode
         self.description = description
         self.status = status
@@ -283,7 +284,7 @@ class card:
                 "type":"card",
                 "fields":
                 {
-                    "icon":"",
+                    "icon": self.icon,
                     "properties":
                     {   
                         board.statusId:board.statuses[self.status],
