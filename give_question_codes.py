@@ -44,7 +44,7 @@ question_bank_data = question_bank_cells[1:]
 # --------------- RETRIEVE DATA FROM THE USED QUESTION CODES .JSON FILE
 
 try:
-    with open("used_question_codes.json") as codes_json:
+    with open("indexing_codes_files/used_question_codes.json") as codes_json:
         codes_dict = json.load(codes_json)
     used_question_codes = list(codes_dict.keys())
 except:
@@ -117,7 +117,7 @@ for x in range(len(question_bank_data)):
 # --------------- UPADATE .JSON FILE
 
 json_codes_object = json.dumps(codes_dict, indent=4)
-with open("used_question_codes.json", "w") as outfile:
+with open("indexing_codes_files/used_question_codes.json", "w") as outfile:
     outfile.write(json_codes_object)
 
 
