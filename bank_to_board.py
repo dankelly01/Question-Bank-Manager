@@ -9,7 +9,7 @@ import manageBoards
 # e.g. "MMUST - STA 142 Introduction to Probability"
 
 question_bank_name = "Statistics and Probability"
-boardArchiveFile =  "mmustSta141.boardarchive"
+boardArchiveFile =  "board_archives/statistics_and_probability.boardarchive"
 
 # --------------- RETRIEVE DATA FROM COURSE TRACKER
 
@@ -40,7 +40,7 @@ course_tracker_data = course_tracker_cells[1:]
 # --------------- GENERATE MATTERMOST BOARD
 
 board = manageBoards.board(question_bank_name + " - Open Question Bank")
-authorCodes = manageBoards.get_author_codes("author_codes.json")
+authorCodes = manageBoards.get_author_codes("indexing_codes_files/author_codes.json")
 
 header_index = {}
 for header in course_tracker_headers:
@@ -49,7 +49,7 @@ for header in course_tracker_headers:
 for row in course_tracker_data:
     manageBoards.card(
         row[header_index["Question Title"]],
-        "",
+        "\U0001F4BB",
         row[header_index["Question Code"]],
         row[header_index["Description of Question"]],
         row[header_index["Internal Review Status"]],
