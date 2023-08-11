@@ -117,6 +117,8 @@ for question_row in course_questions:
     for i in range(len(course_tracker_headers)):
         if i in header_index_dict:
             row.append(question_row[header_index_dict[i]])
+        elif course_tracker_headers[i] == "Question Bank":
+            row.append(question_bank_name)
         else:
             row.append("")
     ordered_course_questions.append(row)
@@ -131,8 +133,9 @@ NEEDS WORK
 
 # Push the updated question data to the course tracker
 no_questions = len(ordered_course_questions)
+no_columns = len(course_tracker_headers)
 gws_course_tracker.update_values(
-    "A2:K" + str(no_questions + 1), 
+    "A2:" + chr(no_columns + 64) + str(no_questions + 1), 
     ordered_course_questions)
 
 # Delete any extra rows in the course tracker
