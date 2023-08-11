@@ -1,7 +1,7 @@
 # WOKRING ON
 # Code exports questions selected in question bank to course tracker
-# Currently reformats the tracker each time (could by updated)
-# Add transporting of lists sheet
+# Currently reformats the tracker each time.
+# Need to change this to overlay imported data onto existing so we can import from multiple question banks
 
 # Importing required libraries
 import pygsheets
@@ -12,8 +12,8 @@ import pygsheets
 # 2. Name of the University and Course, separated by a "-" 
 # e.g. "MMUST - STA 142 Introduction to Probability"
 
-question_bank_name = "Statistics and Probability"
-course_tracker_name = "MMUST - STA 141 Introduction to Statistics"
+question_bank_name = "Basic Maths"
+course_tracker_name = "BDU - Basic Maths SS"
 
 
 # --------------- RETRIEVE DATA FROM OPEN QUESTION BANK
@@ -35,7 +35,7 @@ except:
     print("The Question Bank does not have a Questions sheet.")
     exit()
 try:
-    gws_question_bank_lists = gss_question_bank.worksheet("title", "Questions")
+    gws_question_bank_lists = gss_question_bank.worksheet("title", "Lists")
 except:
     print("The Question Bank does not have a Lists sheet.")
     exit()
@@ -93,7 +93,20 @@ course_tracker_headers = course_tracker_cells[0]
 course_tracker_data = course_tracker_cells[1:]
 
 
-# --------------- SETING UP DATA FOR TRANSFER
+# --------------- RETRIEVE AND TRANSFER COURSE STRUCTURE FROM LISTS SHEET
+
+# Find the column of the course structure in the lists sheet
+list_headers = gws_question_bank_lists.get_row(1)
+try:
+    structure_index = list_headers.index(course_header)
+except:
+    print("The Course Name you have given could not be found in the Lists sheet of the Question Bank.")
+    exit()
+course_structure = gws_question_bank_lists.get_col(structure_index + 1)[1:]
+gws_course_tracker_lists.update_col(1, course_structure, 1)
+
+
+# --------------- SETING UP QUESTION DATA FOR TRANSFER
 
 # Order the question data retrieved from the quesiton bank 
 # to match the column order in the course tracker
