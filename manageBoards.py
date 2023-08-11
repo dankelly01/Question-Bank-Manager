@@ -21,7 +21,7 @@ def get_author_codes(file_location):
         return(json.load(file))
 
 def write_to_file(data, file_location):
-    with open(file_location, "w") as file:
+    with open(file_location, "w", encoding="utf-8") as file:
         for line in data:
             file.write(str(line)
                     .replace("False", "false")
@@ -180,13 +180,13 @@ class board:
                 {
                     # Peer Reviewer Property
                     "id":self.peerReviewId,
-                    "name":"Lead Author",
+                    "name":"Peer Reviewer",
                     "type":"person"
                 },
                 {
                     # Second Reviewer Property
                     "id":self.secondReviewId,
-                    "name":"Lead Author",
+                    "name":"Second Reviewer",
                     "type":"person"
                 },
                 {
@@ -198,13 +198,13 @@ class board:
                 {
                     # STACK Link Property
                     "id":self.stackLinkId,
-                    "name":"Concept Link",
+                    "name":"STACK Link",
                     "type":"url"
                 },
                 {
                     # Card Link Property
                     "id":self.cardLinkId,
-                    "name":"Concept Link",
+                    "name":"Card Link",
                     "type":"url"
                 }]
             },
