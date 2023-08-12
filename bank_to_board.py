@@ -3,10 +3,8 @@ import pygsheets
 import manageBoards
 
 # User must specify
-# 1. Name of the Open Question Bank, 
-# e.g. "Statistics and Probability"
-# 2. Name of the University and Course, separated by a "-" 
-# e.g. "MMUST - STA 142 Introduction to Probability"
+# 1. Name of the Open Question Bank, e.g. "Statistics and Probability"
+# 2. Name of the .boardarchive file from which the board is created
 
 question_bank_name = "Statistics and Probability"
 boardArchiveFile =  "board_archives/statistics_and_probability.boardarchive"

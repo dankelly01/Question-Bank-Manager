@@ -1,16 +1,9 @@
-# WOKRING ON
-# Code exports questions selected in question bank to course tracker
-# Currently reformats the tracker each time.
-# Need to change this to overlay imported data onto existing so we can import from multiple question banks
-
 # Importing required libraries
 import pygsheets
 
 # User must specify
-# 1. Name of the Open Question Bank, 
-# e.g. "Statistics and Probability"
-# 2. Name of the University and Course, separated by a "-" 
-# e.g. "MMUST - STA 142 Introduction to Probability"
+# 1. Name of the Open Question Bank, e.g. "Statistics and Probability"
+# 2. Name of the University and Course separated by a "-", e.g. "MMUST - STA 142 Introduction to Probability"
 
 question_bank_name = "Calculus"
 course_tracker_name = "BDU - Basic Maths SS"
