@@ -93,17 +93,72 @@ course_tracker_headers = course_tracker_cells[0]
 course_tracker_data = course_tracker_cells[1:]
 
 
-# --------------- RETRIEVE AND TRANSFER COURSE STRUCTURE FROM LISTS SHEET
+# --------------- RETRIEVE DATA FROM LISTS SHEETS
 
-# Find the column of the course structure in the lists sheet
-list_headers = gws_question_bank_lists.get_row(1)
+# Retrieve data from the question bank lists
+question_bank_list_cells = gws_question_bank_lists.get_all_values(
+    include_tailing_empty_rows = False
+)
+question_bank_list_headers = question_bank_list_cells[0]
+question_bank_list_cells = question_bank_list_cells[1:]
+
+# Determine the structure titles for the course being exported
 try:
-    structure_index = list_headers.index(course_header)
+    qb_course_structure_index = question_bank_list_headers.index(course_header)
+    qb_course_structure = [row[qb_course_structure_index] for row in question_bank_list_cells if row[qb_course_structure_index] != ""]
 except:
     print("The Course Name you have given could not be found in the Lists sheet of the Question Bank.")
     exit()
-course_structure = gws_question_bank_lists.get_col(structure_index + 1)[1:]
-gws_course_tracker_lists.update_col(1, course_structure, 1)
+
+# Determine the STACK leads for the quesiton bank
+try:
+    qb_stack_leads_index = question_bank_list_headers.index("STACK Leads")
+    qb_stack_leads = [row[qb_stack_leads_index] for row in question_bank_list_cells if row[qb_stack_leads_index] != ""]
+except:
+    print("The Course Name you have given could not be found in the Lists sheet of the Question Bank.")
+    exit()
+
+# Retrieve existing data from course tracker lists
+course_tracker_list_cells = gws_course_tracker_lists.get_all_values(
+    include_tailing_empty_rows = False
+)
+course_tracker_list_headers = course_tracker_list_cells[0]
+course_tracker_list_cells = course_tracker_list_cells[1:]
+
+# Find the existing structure titles for the course
+try:
+    ct_course_structure_index = course_tracker_list_headers.index("Course Structure Labels")
+    ct_course_structure = [row[ct_course_structure_index] for row in course_tracker_list_cells if row[ct_course_structure_index] != ""]
+except:
+    print("The Lists sheet for the course tracker does not have a Course Structure Labels column.")
+    exit()
+
+# Find the existing STACK leads for the course
+try:
+    ct_stack_leads_index = course_tracker_list_headers.index("STACK Leads")
+    ct_stack_leads = [row[ct_stack_leads_index] for row in course_tracker_list_cells if row[ct_stack_leads_index] != ""]
+except:
+    print("The Lists sheet for the course tracker does not have a STACK Leads column.")
+    exit()
+
+# Add missing values to course structure and STACK leads in the course tracker
+for x in qb_course_structure:
+    if not x in ct_course_structure:
+        ct_course_structure.append(x)
+gws_course_tracker_lists.update_col(
+    ct_course_structure_index+1,
+    ct_course_structure,
+    1
+)
+
+for x in qb_stack_leads:
+    if not x in ct_stack_leads:
+        ct_stack_leads.append(x)
+gws_course_tracker_lists.update_col(
+    ct_stack_leads_index+1,
+    ct_stack_leads,
+    1
+)
 
 
 # --------------- SETING UP QUESTION DATA FOR TRANSFER
