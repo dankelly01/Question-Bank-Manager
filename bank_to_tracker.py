@@ -12,7 +12,7 @@ import pygsheets
 # 2. Name of the University and Course, separated by a "-" 
 # e.g. "MMUST - STA 142 Introduction to Probability"
 
-question_bank_name = "Basic Maths"
+question_bank_name = "Calculus"
 course_tracker_name = "BDU - Basic Maths SS"
 
 
@@ -163,48 +163,61 @@ gws_course_tracker_lists.update_col(
 
 # --------------- SETING UP QUESTION DATA FOR TRANSFER
 
-# Order the question data retrieved from the quesiton bank 
-# to match the column order in the course tracker
-ordered_course_questions = []
-
-# Create a dictionary taking header of course tracker to index 
-# of the matching header in the question tracker
+# Create a dictionary taking the index of each header in the course tracker to index of the matching header in the question bank
 header_index_dict = {
     0: course_index
 }
 for header in course_tracker_headers[1:]:
     try:
         header_index_dict[course_tracker_headers.index(header)] = question_bank_headers.index(header)
+        header_index_list = list(header_index_dict.keys())
     except:
         print("Data for the column \"" + header + "\" could not be found in the Question Bank.")
 
-# Parse through the questions for transfer and reorder the entries to fit the columns
-# in the course tracker
-for question_row in course_questions:
-    row = []
-    for i in range(len(course_tracker_headers)):
-        if i in header_index_dict:
-            row.append(question_row[header_index_dict[i]])
-        elif course_tracker_headers[i] == "Question Bank":
-            row.append(question_bank_name)
-        else:
-            row.append("")
-    ordered_course_questions.append(row)
+# Determine the index of the Question Codes in each of the course tracker and question bank
+ct_question_code_index = course_tracker_headers.index("Question Code")
+qb_question_code_index = question_bank_headers.index("Question Code")
+# Isolate a list of the existing question codes in the course tracker
+course_tracker_question_codes = [row[ct_question_code_index] for row in course_tracker_data]
 
-# Order rows to match the existing structure of the course tracker
-'''
-NEEDS WORK
-'''
+# Parse through questions for transfer, determine if the question exists already in the course tracker by comparing the question code.
+for question_row in course_questions:
+    question_code = question_row[qb_question_code_index]
+    
+    # If the question exists already update the relevant values.
+    if question_code in course_tracker_question_codes:
+        
+        # Find the relevant row in the course tracker
+        course_tracker_row_index = course_tracker_question_codes.index(question_code)
+        course_tracker_row = course_tracker_data[course_tracker_row_index]
+        
+        # Update values in the question tracker row
+        for x in range(len(course_tracker_headers)):
+            if x in header_index_list:
+                course_tracker_row[x] = question_row[header_index_dict[x]]
+        course_tracker_data[course_tracker_row_index] = course_tracker_row
+
+    # If the question does not exist in the course tracker, add it to the end of the course tracker.
+    else:
+        course_tracker_row = []
+        for x in range(len(course_tracker_headers)):
+            if x in header_index_list:
+                course_tracker_row.append(question_row[header_index_dict[x]])
+            elif course_tracker_headers[x] == "Question Bank":
+                course_tracker_row.append(question_bank_name)
+            else:
+                course_tracker_row.append("")
+        course_tracker_data.append(course_tracker_row)
 
 
 # --------------- UPLOAD NEW DATA TO COURSE TRACKER
 
 # Push the updated question data to the course tracker
-no_questions = len(ordered_course_questions)
+no_questions = len(course_tracker_data)
 no_columns = len(course_tracker_headers)
 gws_course_tracker.update_values(
     "A2:" + chr(no_columns + 64) + str(no_questions + 1), 
-    ordered_course_questions)
+    course_tracker_data)
 
 # Delete any extra rows in the course tracker
 course_tracker_rows = gws_course_tracker.rows
