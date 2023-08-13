@@ -11,42 +11,53 @@ import json
 # 2. Question Bank name
 
 csv_data_file = "board_downloads/advanced_mathematics.csv"
-gss_name = "Copy of **Blank** - Question Bank"
+question_bank_name = "Copy of **Blank**"
 
 
-# <---------- SET UP ------------->
+# --------------- RETRIEVE DATA FROM OPEN QUESTION BANK
 
-# Open the question bank
-client = pygsheets.authorize(service_account_file="C:/Users/James/OneDrive/Documents/008_VisualStudio/IDEMS/Quesiton-Bank-manager/service_account.json")
-gss_question_bank = client.open(gss_name)
-gws_question_bank = gss_question_bank.worksheet("title", "Questions")
+# Open question bank
+try:
+    client = pygsheets.authorize(service_account_file="C:/Users/James/OneDrive/Documents/008_VisualStudio/IDEMS/Quesiton-Bank-manager/service_account.json")
+except:
+    print("Error: Service account .json file not found.")
+    exit()
+try:
+    gss_question_bank = client.open(question_bank_name + " - Question Bank")
+except:
+    print("Error: Could not find this Question Bank.")
+    exit()
+try:
+    gws_question_bank = gss_question_bank.worksheet("title", "Questions")
+except:
+    print("The Question Bank does not have a Questions sheet.")
+    exit()
 
-# Download question headers, question codes and data
-question_bank_heads = gws_question_bank.get_row(
-    1,
-    include_tailing_empty=False,
-    )
-question_bank_question_codes = gws_question_bank.get_col(
-    1,
-    include_tailing_empty=False,
-    )[1:]
-question_bank_data = gws_question_bank.get_all_values(
-    include_tailing_empty=False,
-    include_tailing_empty_rows=False,
-    value_render = "FORMULA"
-    )[1:]
+# Download cell data from the question bank
+question_bank_cells = gws_question_bank.get_all_values()
+
+# Separate column headers and question data
+question_bank_headers = question_bank_cells[0]
+question_bank_data = question_bank_cells[1:]
 
 # Set up key-value mapping from the header of the column in the question bank to position in the row
 question_bank_headsToIndex = {}
-for i in question_bank_heads:
-    question_bank_headsToIndex[i] = question_bank_heads.index(i)
+for i in question_bank_headers:
+    question_bank_headsToIndex[i] = question_bank_headers.index(i)
+
+# Extract a list of the question codes already in the question bank
+qb_question_codes_index = question_bank_headers.index("Question Code")
+qb_question_codes = [x[qb_question_codes_index] for x in question_bank_data]
 
 # Importing the translator file to convert board user codes to names
-with open("indexing_codes_files/author_codes.json") as user_translator_file:
-    translator = json.load(user_translator_file)
-translated_words = translator.keys()
+with open("indexing_codes_files/author_codes.json") as author_codes_file:
+    author_codes = json.load(author_codes_file)
+codes_to_author = {}
+for author in author_codes.keys():
+    codes_to_author[author_codes[author]] = author
 
-# <----------- SCRIPT ------------->
+
+# --------------- PARSE .CSV FILE DATA AND IMPORT TO QUESTION BANK
 
 with open(csv_data_file, mode='r') as csv_file:
 
@@ -84,11 +95,10 @@ with open(csv_data_file, mode='r') as csv_file:
 
                 # Add new empty row in question bank data to edit
                 edit_row = len(question_bank_data)
-                question_bank_data.append(["" for x in question_bank_heads])
-                needs_edit = True
+                question_bank_data.append(["" for x in question_bank_headers])
 
                 # Add the new question code to the list of codes in the question bank
-                question_bank_question_codes.append(new_code)
+                qb_question_codes.append(new_code)
 
                 # Output the Mattermost link to the question card which requires new question code
                 if csv_row_dict["Card Link"] == "":
@@ -102,70 +112,35 @@ with open(csv_data_file, mode='r') as csv_file:
             else:
                 
                 # If the question code has a row in the question bank, then set the edit row accordingly
-                if csv_row_dict["Question Code"] in question_bank_question_codes:
-                    edit_row = question_bank_question_codes.index(csv_row_dict["Question Code"])
-
-                    # Decide if the row requires editing
-                    if [csv_row_dict[header] for header in csv_heads] == [question_bank_data[edit_row][question_bank_headsToIndex[header]] for header in csv_heads]:
-                        needs_edit = False
-                    else:
-                        needs_edit = True
+                if csv_row_dict["Question Code"].replace("___hash_sign___", "#") in qb_question_codes:
+                    edit_row = qb_question_codes.index(csv_row_dict["Question Code"].replace("___hash_sign___", "#"))
 
                 else:
                 # If the Question code is not in the data, add a new row to edit
                     edit_row = len(question_bank_data)
-                    question_bank_data.append(["" for x in question_bank_heads])
-                    needs_edit = True
+                    question_bank_data.append(["" for x in question_bank_headers])
 
-            # Finally, proceed if the row requires editting
-            if needs_edit:
+            # Finally, edit the row
+            for header in csv_heads:
 
-                for header in csv_heads:
+                # Determine the column in the question bank to be editted
+                if header == "Name":
+                    edit_col = question_bank_headsToIndex["Question Title"]
+                elif header == "Status":
+                    edit_col = question_bank_headsToIndex["Internal Review Status"]
+                else:
                     edit_col = question_bank_headsToIndex[header]
-                    if csv_row_dict[header] in translated_words:
-                        question_bank_data[edit_row][edit_col] = translator[csv_row_dict[header]]
-                    
-                    elif csv_row_dict[header][0 : min(8, len(csv_row_dict[header]))] == "https://":
-                        question_bank_data[edit_row][edit_col] = "=HYPERLINK(\"" + csv_row_dict[header] + "\",\"" + header + "\")"
-                    
-                    else:
-                        question_bank_data[edit_row][edit_col] = csv_row_dict[header]
-                
-                # Set backed up to false
-                question_bank_data[edit_row][17] = "False"
+
+                # Edit the relevant column
+                if header == "Question Code":
+                    question_bank_data[edit_row][edit_col] = csv_row_dict[header].replace("___hash_sign___", "#")
+                elif header == "STACK Lead" or header == "Peer Reviewer" or header == "Second Reviewer":
+                    question_bank_data[edit_row][edit_col] = codes_to_author[csv_row_dict[header]]
+                else:
+                    question_bank_data[edit_row][edit_col] = csv_row_dict[header]
 
         csv_row_counter += 1
 
 # Update cell data in google sheet
 question_bank_no_rows = len(question_bank_data)
 gws_question_bank.update_values("A2:R" + str(question_bank_no_rows + 1), question_bank_data)
-
-# Format "Edit Tags" column with drop down lists
-gws_question_bank.apply_format(
-    "F2:F" + str(question_bank_no_rows + 1),
-    {"backgroundColor":{
-        "red":255/255,
-        "green":242/255,
-        "blue":204/255,
-        "alpha":0
-        }
-    }
-)
-
-gws_question_bank.set_data_validation(
-    start = "F2",
-    end = "F" + str(question_bank_no_rows + 1),
-    condition_type = "ONE_OF_RANGE",
-    condition_values = ["=Tags!A:A"],
-    strict = True,
-    showCustomUi = True,
-    inputMessage = "This input is not a recognised tag."
-)
-
-# Format "Backed up" column with tick boxes
-gws_question_bank.set_data_validation(
-    start = "R2",
-    end = "R"+str(question_bank_no_rows + 1),
-    condition_type = "BOOLEAN",
-    condition_values = []
-)
