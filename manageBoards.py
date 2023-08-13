@@ -168,7 +168,7 @@ class board:
                 {
                     # Question Description Property
                     "id":self.descriptionId,
-                    "name":"Question Description",
+                    "name":"Description of Question",
                     "type":"text"
                 },
                 {
