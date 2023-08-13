@@ -6,8 +6,26 @@ import manageBoards
 # 1. Name of the Open Question Bank, e.g. "Statistics and Probability"
 # 2. Name of the .boardarchive file from which the board is created
 
+# question_bank_name = "Advanced Mathematics"
+# boardArchiveFile = "board_archives/advanced_mathematics.boardarchive"
+
+# question_bank_name = "Applied Mathematics"
+# boardArchiveFile = "board_archives/applied_mathematics.boardarchive"
+
+# question_bank_name = "Basic Maths"
+# boardArchiveFile = "board_archives/basic_maths.boardarchive"
+
+# question_bank_name = "Calculus"
+# boardArchiveFile = "board_archives/calculus.boardarchive"
+
+# question_bank_name = "Complex Numbers"
+# boardArchiveFile = "board_archives/complex numbers.boardarchive"
+
+# question_bank_name = "Linear Algebra"
+# boardArchiveFile = "board_archives/linear_algebra.boardarchive"
+
 question_bank_name = "Statistics and Probability"
-boardArchiveFile =  "board_archives/statistics_and_probability.boardarchive"
+boardArchiveFile = "board_archives/statistics_and_probability.boardarchive"
 
 
 # --------------- RETRIEVE DATA FROM COURSE TRACKER
@@ -53,8 +71,8 @@ for row in course_tracker_data:
         row[header_index["Description of Question"]],
         row[header_index["Internal Review Status"]],
         row[header_index["STACK Lead"]],
-        row[header_index["Peer Review"]],
-        row[header_index["Second Review"]],
+        row[header_index["Peer Reviewer"]],
+        row[header_index["Second Reviewer"]],
         authorCodes,
         row[header_index["Link to Concept"]],
         row[header_index["Link to STACK"]],
