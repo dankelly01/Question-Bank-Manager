@@ -192,19 +192,19 @@ class board:
                 {
                     # Concept Link Property
                     "id":self.conceptLinkId,
-                    "name":"Concept Link",
+                    "name":"Link to Concept",
                     "type":"url"
                 },
                 {
                     # STACK Link Property
                     "id":self.stackLinkId,
-                    "name":"STACK Link",
+                    "name":"Link to STACK",
                     "type":"url"
                 },
                 {
                     # Card Link Property
                     "id":self.cardLinkId,
-                    "name":"Card Link",
+                    "name":"Link to Card",
                     "type":"url"
                 }]
             },
