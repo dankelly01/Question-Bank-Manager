@@ -65,8 +65,8 @@ class board:
         self.questionCodeId = get_formatted_id()
         self.descriptionId = get_formatted_id()
         self.stackLeadId = get_formatted_id()
-        self.peerReviewId = get_formatted_id()
-        self.secondReviewId = get_formatted_id()
+        self.peerReviewerId = get_formatted_id()
+        self.secondReviewerId = get_formatted_id()
         self.conceptLinkId = get_formatted_id()
         self.stackLinkId = get_formatted_id()
         self.cardLinkId = get_formatted_id()
@@ -173,19 +173,19 @@ class board:
                 },
                 {
                     # Lead Author Property
-                    "id":self.leadAuthorId,
+                    "id":self.stackLeadId,
                     "name":"STACK Lead",
                     "type":"person"
                 },
                 {
                     # Peer Reviewer Property
-                    "id":self.peerReviewId,
+                    "id":self.peerReviewerId,
                     "name":"Peer Reviewer",
                     "type":"person"
                 },
                 {
                     # Second Reviewer Property
-                    "id":self.secondReviewId,
+                    "id":self.secondReviewerId,
                     "name":"Second Reviewer",
                     "type":"person"
                 },
@@ -290,9 +290,9 @@ class card:
                         board.statusId:board.statuses[self.status],
                         board.questionCodeId:self.questionCode,
                         board.descriptionId:self.description,
-                        board.stackLead:self.authorCodes[self.stackLead],
-                        board.peerReviewId:self.authorCodes[self.peerReviewer],
-                        board.secondReviewId:self.authorCodes[self.secondReviewer],
+                        board.stackLeadId:self.authorCodes[self.stackLead],
+                        board.peerReviewerId:self.authorCodes[self.peerReviewer],
+                        board.secondReviewerId:self.authorCodes[self.secondReviewer],
                         board.conceptLinkId:self.conceptLink,
                         board.stackLinkId:self.stackLink,
                         board.cardLinkId:self.cardLink,
