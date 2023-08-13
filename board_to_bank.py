@@ -11,7 +11,7 @@ import json
 # 2. Question Bank name
 
 csv_data_file = "board_downloads/advanced_mathematics.csv"
-question_bank_name = "Copy of **Blank**"
+question_bank_name = "Advanced Mathematics"
 
 
 # --------------- RETRIEVE DATA FROM OPEN QUESTION BANK
@@ -79,8 +79,9 @@ with open(csv_data_file, mode='r') as csv_file:
             if csv_row_dict["Question Code"] == "":
 
                 # Assign question code
-                with open("used_question_codes.json") as used_question_codes:
-                    used_codes_list = json.load(used_question_codes)
+                with open("indexing_codes_files/used_question_codes.json") as used_question_codes:
+                    used_codes_dict = json.load(used_question_codes)
+                    used_codes_list = list(used_codes_dict.keys())
                     last_code_num = int(used_codes_list[-1][0:6])
                     new_code_num = last_code_num + 1
                     new_code = str(new_code_num) + "-000"
@@ -89,9 +90,9 @@ with open(csv_data_file, mode='r') as csv_file:
                     csv_row_dict["Question Code"] = new_code
                     
                 # Add used question code to .json file
-                with open("used_question_codes.json", "w") as used_question_codes:
-                    used_codes_list.append(new_code)
-                    used_question_codes.write(json.dumps(used_codes_list, indent=4))
+                with open("indexing_codes_files/used_question_codes.json", "w") as used_question_codes:
+                    used_codes_dict[new_code] = ["000"]
+                    used_question_codes.write(json.dumps(used_codes_dict, indent=4))
 
                 # Add new empty row in question bank data to edit
                 edit_row = len(question_bank_data)
@@ -101,12 +102,12 @@ with open(csv_data_file, mode='r') as csv_file:
                 qb_question_codes.append(new_code)
 
                 # Output the Mattermost link to the question card which requires new question code
-                if csv_row_dict["Card Link"] == "":
+                if csv_row_dict["Link to Card"] == "":
                     print("The code " + new_code + " has been assigned to one of the questions." +
                           "\n The link to the question card was not found.")
                 else:
-                    print("The code " + new_code + " has been assigned to one of the questions." +
-                          "\n The question card is: " + csv_row_dict["Card Link"])
+                    print("The code #" + new_code + " has been assigned to one of the questions." +
+                          "\n The question card is: " + csv_row_dict["Link to Card"])
 
             # If the card has a question code, determine if the card has an existing entry in the question bank
             else:
