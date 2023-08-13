@@ -1,4 +1,3 @@
-# FULLY FUNCTIONAL
 # Code provides question codes to questions listed in an existing quesiton bank
 
 # Importing required libraries
@@ -6,10 +5,7 @@ import pygsheets
 import json
 
 # User must specify
-# 1. Name of the Open Question Bank, 
-# e.g. "Statistics and Probability"
-# 2. Name of the University and Course, separated by a "-" 
-# e.g. "MMUST - STA 142 Introduction to Probability"
+# 1. Name of the Open Question Bank, e.g. "Statistics and Probability"
 
 question_bank_name = "Statistics and Probability"
 

@@ -1,22 +1,25 @@
+# Adds/Updates question data from Mattermost .csv to question bank
+# Assigns question codes to new questions and returns required updates to Mattermost
+
 # Importing required libraries
 import pygsheets
 import csv
 import json
 
-# Adds/Updates question data from Matter most .csv to question bank
-# Assigns question codes to new questions and returns required updates to Mattermost
+# User must specify 
+# 1. The .csv file with downloaded board data 
+# 2. Question Bank name
 
-# User specifies .csv file with board data and Google spreadsheet question tracker name
+csv_data_file = "board_downloads/advanced_mathematics.csv"
+gss_name = "Copy of **Blank** - Question Bank"
 
-csv_data_file = "C:/Users/James/OneDrive/Documents/008_VisualStudio/IDEMS/Quesiton Bank manager/Mock-up_Authoring_Board_2.csv"
-gss_name = "Mock-up Question Bank 2"
 
 # <---------- SET UP ------------->
 
 # Open the question bank
-client = pygsheets.authorize(service_account_file="C:/Users/James/OneDrive/Documents/008_VisualStudio/IDEMS/Quesiton Bank manager/service_account.json")
+client = pygsheets.authorize(service_account_file="C:/Users/James/OneDrive/Documents/008_VisualStudio/IDEMS/Quesiton-Bank-manager/service_account.json")
 gss_question_bank = client.open(gss_name)
-gws_question_bank = gss_question_bank.worksheet("title", "Question Tracker")
+gws_question_bank = gss_question_bank.worksheet("title", "Questions")
 
 # Download question headers, question codes and data
 question_bank_heads = gws_question_bank.get_row(
@@ -39,7 +42,7 @@ for i in question_bank_heads:
     question_bank_headsToIndex[i] = question_bank_heads.index(i)
 
 # Importing the translator file to convert board user codes to names
-with open("user_translator.json") as user_translator_file:
+with open("indexing_codes_files/author_codes.json") as user_translator_file:
     translator = json.load(user_translator_file)
 translated_words = translator.keys()
 

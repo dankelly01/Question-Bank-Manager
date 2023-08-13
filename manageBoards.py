@@ -64,7 +64,7 @@ class board:
         }
         self.questionCodeId = get_formatted_id()
         self.descriptionId = get_formatted_id()
-        self.leadAuthorId = get_formatted_id()
+        self.stackLeadId = get_formatted_id()
         self.peerReviewId = get_formatted_id()
         self.secondReviewId = get_formatted_id()
         self.conceptLinkId = get_formatted_id()
@@ -174,7 +174,7 @@ class board:
                 {
                     # Lead Author Property
                     "id":self.leadAuthorId,
-                    "name":"Lead Author",
+                    "name":"STACK Lead",
                     "type":"person"
                 },
                 {
@@ -254,7 +254,7 @@ class board:
 
 class card:
 
-    def __init__(self, questionTitle, icon, questionCode, description, status, leadAuthor, peerReviewer, secondReviewer, authorCodes, conceptLink, stackLink, cardLink):
+    def __init__(self, questionTitle, icon, questionCode, description, status, stackLead, peerReviewer, secondReviewer, authorCodes, conceptLink, stackLink, cardLink):
         self.questionTitle = questionTitle
         self.date = math.floor(1000*time.time())
         self.id = get_random_string(27)
@@ -262,7 +262,7 @@ class card:
         self.questionCode = questionCode
         self.description = description
         self.status = status
-        self.leadAuthor = leadAuthor
+        self.stackLead = stackLead
         self.peerReviewer = peerReviewer
         self.secondReviewer = secondReviewer
         self.authorCodes = authorCodes
@@ -290,7 +290,7 @@ class card:
                         board.statusId:board.statuses[self.status],
                         board.questionCodeId:self.questionCode,
                         board.descriptionId:self.description,
-                        board.leadAuthorId:self.authorCodes[self.leadAuthor],
+                        board.stackLead:self.authorCodes[self.stackLead],
                         board.peerReviewId:self.authorCodes[self.peerReviewer],
                         board.secondReviewId:self.authorCodes[self.secondReviewer],
                         board.conceptLinkId:self.conceptLink,
